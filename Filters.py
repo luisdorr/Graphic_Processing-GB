@@ -7,7 +7,7 @@ corModificadora = [255, 0, 0]
 k = 150
 
 
-class Filtros:
+class Filters:
     def grayscale_media_aritmetica(self, img):
         img2 = img.copy()
         for i in range(img.shape[0]):
@@ -53,8 +53,8 @@ class Filtros:
         img_r = img.copy()
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
-                img_r.itemset((line, column, 0), 0)
                 img_r.itemset((line, column, 1), 0)
+                img_r.itemset((line, column, 2), 0)
         return img_r
 
     def renderizar_canal_verde(self, img):
@@ -70,7 +70,8 @@ class Filtros:
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
                 img_b.itemset((line, column, 1), 0)
-                img_b.itemset((line, column, 2), 0)
+                img_b.itemset((line, column, 0), 0)
+
         return img_b
 
     def grayscale_media_ponderada(self, img):
@@ -119,8 +120,7 @@ class Filtros:
                     img_binarised.itemset((line, column), 255)
         return img_binarised
 
-
-    def mixed_filter(self, img, raio):
+    def grayScale_vignette(self, img, raio):
         img_gray = self.grayscale_media_ponderada(img)  # aplica o filtro de grayscale
         img_mixed = self.vignette(img_gray, raio)  # aplica o filtro de vignette
         return img_mixed  # retorna a imagem mista
@@ -138,7 +138,7 @@ class Filtros:
 
 
 # Criando um objeto da classe Filtros
-filtros = Filtros()
+filtros = Filters()
 
 # Aplicando os métodos na imagem original
 # img2 = filtros.grayscale_media_aritmetica(img)
@@ -158,7 +158,7 @@ filtros = Filtros()
 # cv.imshow("Imagem invertida", img6)
 # cv.imshow("Imagem Binarizada", img8)
 # cv.imshow("Imagem Color Ramp", img9)
-
+"""
 img_r = filtros.renderizar_canal_vermelho(img)
 img_g = filtros.renderizar_canal_verde(img)
 img_b = filtros.renderizar_canal_azul(img)
@@ -168,7 +168,7 @@ corUniforme = [50, 100, 200]
 img_colorized = filtros.colorizar(img, corUniforme)
 img_inverted = filtros.inverter(img)
 img_binarised = filtros.binarizar(img, 100)
-img_mixed = filtros.mixed_filter(img, 225)
+img_mixed = filtros.grayScale_Vignette(img, 225)
 img_vignette = filtros.vignette(img, 274)
 
 cv.imshow("Canal vermelho", img_r)
@@ -183,3 +183,4 @@ cv.imshow("Vignette", img_vignette)
 
 cv.waitKey(0)
 cv.destroyAllWindows()
+"""
