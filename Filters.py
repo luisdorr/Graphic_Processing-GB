@@ -135,7 +135,16 @@ class Filters:
                 f = max(0, 1 - d / raio)  # fator de escurecimento
                 img_vignette[line, column] = img_vignette[line, column] * f  # multiplica o pixel pelo fator
         return img_vignette
+    
+    def sharp(self, img):
+        sharpKernel = np.array([[-1, -1, -1], [-1, 9.5, -1], [-1, -1, -1]])
+        img_sharp = cv.filter2D(img, -1, sharpKernel)
+        return img_sharp
 
+    def canny(self, img):
+        img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+        img_canny = cv.Canny(img_gray, 50, 100)
+        return img_canny
 
 # Criando um objeto da classe Filtros
 filtros = Filters()
