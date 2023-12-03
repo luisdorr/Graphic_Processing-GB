@@ -1,4 +1,5 @@
 from tkinter import Tk, Label, Button, filedialog
+from tkinter.constants import CENTER
 
 import numpy as np
 from PIL import Image, ImageTk
@@ -32,8 +33,17 @@ class ImageEditorApp:
         self.root.mainloop()
 
     def take_photo(self):
-        # Lógica para tirar uma foto (não implementada aqui)
-        pass
+        capture = cv2.VideoCapture(0)
+        if not capture.isOpened():
+            print('Unable to open')
+            exit(0)
+
+        ret, frame = capture.read()
+        if frame is None:
+            return
+
+        # Display the resulting frame
+        self.display_image(frame)
 
     def open_file(self):
         file_path = filedialog.askopenfilename()
@@ -50,48 +60,109 @@ class ImageEditorApp:
     def display_image(self, file_path):
         try:
             # Carrega a imagem do arquivo
+            if (isinstance(file_path, np.ndarray)):
+                # Converte a imagem para o formato RGB
+                img = cv2.cvtColor(file_path, cv2.COLOR_BGR2RGB)
+                img = Image.fromarray(img)
+            else:
+                img = Image.open(file_path)
+                # Converte a imagem para o formato RGB
+                img = img.convert("RGB")
+
             img = Image.open(file_path)
-            # Converte a imagem para o formato RGB
             img = img.convert("RGB")
-            # Redimensiona a imagem para 300x300 pixels
             img = img.resize((300, 300))
-            # Converte a imagem para o formato do Tkinter
+
             img_tk = ImageTk.PhotoImage(img)
-            # Atualiza a imagem no label
+
             self.image_label.img = img_tk
             self.image_label.config(image=img_tk)
 
-            # Cria uma instância da classe Filters
+            self.image_label.place(relx=0.5, rely=0.5, anchor=CENTER)
+
             self.filters = Filters()
 
-            # Cria os botões para os filtros
-            self.red_button = Button(text="Red", width=10, command=lambda: self.renderizar_canal_vermelho(img))
-            self.red_button.grid(row=5, column=0, padx=5, pady=5)
+            info_img = self.image_label.place_info()
+            x_img = info_img['x']
+            y_img = info_img['y']
 
-            self.green_button = Button(text="Green", width=10, command=lambda: self.renderizar_canal_verde(img))
-            self.green_button.grid(row=5, column=1, padx=5, pady=5)
+            # Cria miniaturas das imagens com filtros aplicados
+            img_red = self.filters.renderizar_canal_vermelho(np.array(img))
+            img_green = self.filters.renderizar_canal_verde(np.array(img))
+            img_blue = self.filters.renderizar_canal_azul(np.array(img))
+            img_gray = self.filters.grayscale_media_ponderada(np.array(img))
+            img_color = self.filters.colorizar(np.array(img), [50, 100, 200])
+            img_invert = self.filters.inverter(np.array(img))
+            img_binarize = self.filters.binarizar(np.array(img), 150)
+            img_gray_vignette = self.filters.grayScale_vignette(np.array(img), 225)
+            img_vignette = self.filters.vignette(np.array(img), 225)
 
-            self.blue_button = Button(text="Blue", width=10, command=lambda: self.renderizar_canal_azul(img))
-            self.blue_button.grid(row=5, column=2, padx=5, pady=5)
+            # Redimensiona as miniaturas
+            img_red_thumb = Image.fromarray(img_red).resize((50, 50))
+            img_green_thumb = Image.fromarray(img_green).resize((50, 50))
+            img_blue_thumb = Image.fromarray(img_blue).resize((50, 50))
+            img_gray_thumb = Image.fromarray(img_gray).resize((50, 50))
+            img_color_thumb = Image.fromarray(img_color).resize((50, 50))
+            img_invert_thumb = Image.fromarray(img_invert).resize((50, 50))
+            img_binarize_thumb = Image.fromarray(img_binarize).resize((50, 50))
+            img_gray_vignette_thumb = Image.fromarray(img_gray_vignette).resize((50, 50))
+            img_vignette_thumb = Image.fromarray(img_vignette).resize((50, 50))
 
-            self.gray_button = Button(text="Gray", width=10, command=lambda: self.grayscale_media_ponderada(img))
-            self.gray_button.grid(row=6, column=0, padx=5, pady=5)
+            # Converte miniaturas para o formato do Tkinter
+            img_red_tk = ImageTk.PhotoImage(img_red_thumb)
+            img_green_tk = ImageTk.PhotoImage(img_green_thumb)
+            img_blue_tk = ImageTk.PhotoImage(img_blue_thumb)
+            img_gray_tk = ImageTk.PhotoImage(img_gray_thumb)
+            img_color_tk = ImageTk.PhotoImage(img_color_thumb)
+            img_invert_tk = ImageTk.PhotoImage(img_invert_thumb)
+            img_binarize_tk = ImageTk.PhotoImage(img_binarize_thumb)
+            img_gray_vignette_tk = ImageTk.PhotoImage(img_gray_vignette_thumb)
+            img_vignette_tk = ImageTk.PhotoImage(img_vignette_thumb)
 
-            self.color_button = Button(text="Color", width=10, command=lambda: self.colorizar(img, [50, 100, 200]))
-            self.color_button.grid(row=6, column=1, padx=5, pady=5)
+            # Cria botões com miniaturas das imagens
+            self.red_button = Button(image=img_red_tk, command=lambda: self.renderizar_canal_vermelho(img))
+            self.red_button.image = img_red_tk  # Mantém uma referência para a imagem
+            self.red_button.grid(row=5, column=0)
 
-            self.invert_button = Button(text="Invert", width=10, command=lambda: self.inverter(img))
-            self.invert_button.grid(row=6, column=2, padx=5, pady=5)
+            self.green_button = Button(image=img_green_tk, command=lambda: self.renderizar_canal_verde(img))
+            self.green_button.image = img_green_tk
+            self.green_button.grid(row=5, column=1)
 
-            self.binarize_button = Button(text="Binarize", width=10, command=lambda: self.binarizar(img, 150))
-            self.binarize_button.grid(row=7, column=0, padx=5, pady=5)
+            self.blue_button = Button(image=img_blue_tk, command=lambda: self.renderizar_canal_azul(img))
+            self.blue_button.image = img_blue_tk
+            self.blue_button.grid(row=5, column=2)
 
-            self.gray_vignette_button = Button(text="Gray Vignette", width=10,
+            # Cria um botão com a miniatura da imagem em escala de cinza
+            self.gray_button = Button(image=img_gray_tk, command=lambda: self.grayscale_media_ponderada(img))
+            self.gray_button.image = img_gray_tk
+            self.gray_button.grid(row=5, column=3)
+
+            # Cria um botão com a miniatura da imagem colorida
+            self.color_button = Button(image=img_color_tk, command=lambda: self.colorizar(img, [50, 100, 200]))
+            self.color_button.image = img_color_tk
+            self.color_button.grid(row=5, column=4)
+
+            # Cria um botão com a miniatura da imagem invertida
+            self.invert_button = Button(image=img_invert_tk, command=lambda: self.inverter(img))
+            self.invert_button.image = img_invert_tk
+            self.invert_button.grid(row=5, column=5)
+
+            # Cria um botão com a miniatura da imagem binarizada
+            self.binarize_button = Button(image=img_binarize_tk, command=lambda: self.binarizar(img, 150))
+            self.binarize_button.image = img_binarize_tk
+            self.binarize_button.grid(row=5, column=6)
+
+            # Cria um botão com a miniatura da imagem em escala de cinza com vinhetagem
+            self.gray_vignette_button = Button(image=img_gray_vignette_tk,
                                                command=lambda: self.grayScale_vignette(img, 225))
-            self.gray_vignette_button.grid(row=7, column=1, padx=5, pady=5)
+            self.gray_vignette_button.image = img_gray_vignette_tk
+            self.gray_vignette_button.grid(row=5, column=7)
 
-            self.vignette_button = Button(text="Vignette", width=10, command=lambda: self.vignette(img, 225))
-            self.vignette_button.grid(row=7, column=2, padx=5, pady=5)
+            # Cria um botão com a miniatura da imagem colorida com vinhetagem
+            self.vignette_button = Button(image=img_vignette_tk,
+                                          command=lambda: self.vignette(img, 225))
+            self.vignette_button.image = img_vignette_tk
+            self.vignette_button.grid(row=5, column=8)
 
         except Exception as e:
             print(f"Error displaying image: {e}")
