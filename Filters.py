@@ -9,78 +9,74 @@ k = 150
 
 class Filters:
     def grayscale_media_aritmetica(self, img):
-        img2 = img.copy()
+        img_grayscale_media = img.copy()
         for i in range(img.shape[0]):
             for j in range(img.shape[1]):
                 media = img.item(i, j, 0) * 0.333 + img.item(i, j, 1) * 0.333 + img.item(i, j, 2) * 0.3333
-                img2.itemset((i, j, 0), media)
-                img2.itemset((i, j, 1), media)
-                img2.itemset((i, j, 2), media)
-        return img2
+                img_grayscale_media.itemset((i, j, 0), media)
+                img_grayscale_media.itemset((i, j, 1), media)
+                img_grayscale_media.itemset((i, j, 2), media)
+        return img_grayscale_media
 
     def grayscale_apenas_um_canal(self, img):
-        img10 = img.copy()
+        img_grayscale = img.copy()
         for i in range(img.shape[0]):
             for j in range(img.shape[1]):
-                B = img10.item(i, j, 0)
-                img10.itemset((i, j, 0), B)
-                img10.itemset((i, j, 1), B)
-                img10.itemset((i, j, 2), B)
-        return img10
+                B = img_grayscale.item(i, j, 0)
+                img_grayscale.itemset((i, j, 0), B)
+                img_grayscale.itemset((i, j, 1), B)
+                img_grayscale.itemset((i, j, 2), B)
+        return img_grayscale
 
     def color_ramp(self, img):
-        img7 = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        img9 = img.copy()
-        for i in range(img7.shape[0]):
-            for j in range(img7.shape[1]):
+        img_gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        img_color_ramp = img.copy()
+        for i in range(img_gray.shape[0]):
+            for j in range(img_gray.shape[1]):
                 # "color ramp"
-                if img7.item(i, j) < 100:
-                    img9.itemset((i, j, 0), 255)
-                    img9.itemset((i, j, 1), 255)
-                    img9.itemset((i, j, 2), 0)
-                elif img7.item(i, j) < 150:
-                    img9.itemset((i, j, 0), 255)
-                    img9.itemset((i, j, 1), 0)
-                    img9.itemset((i, j, 2), 255)
+                if img_gray.item(i, j) < 100:
+                    img_color_ramp.itemset((i, j, 0), 255)
+                    img_color_ramp.itemset((i, j, 1), 255)
+                    img_color_ramp.itemset((i, j, 2), 0)
+                elif img_gray.item(i, j) < 150:
+                    img_color_ramp.itemset((i, j, 0), 255)
+                    img_color_ramp.itemset((i, j, 1), 0)
+                    img_color_ramp.itemset((i, j, 2), 255)
                 else:
-                    img9.itemset((i, j, 0), 0)
-                    img9.itemset((i, j, 1), 255)
-                    img9.itemset((i, j, 2), 255)
-        return img9
+                    img_color_ramp.itemset((i, j, 0), 0)
+                    img_color_ramp.itemset((i, j, 1), 255)
+                    img_color_ramp.itemset((i, j, 2), 255)
+        return img_color_ramp
 
-    # Exercise list 5:
     def renderizar_canal_vermelho(self, img):
-        img_r = img.copy()
+        img_red = img.copy()
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
-                img_r.itemset((line, column, 1), 0)
-                img_r.itemset((line, column, 2), 0)
-        return img_r
+                img_red.itemset((line, column, 1), 0)
+                img_red.itemset((line, column, 2), 0)
+        return img_red
 
     def renderizar_canal_verde(self, img):
-        img_g = img.copy()
+        img_green = img.copy()
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
-                img_g.itemset((line, column, 0), 0)
-                img_g.itemset((line, column, 2), 0)
-        return img_g
+                img_green.itemset((line, column, 0), 0)
+                img_green.itemset((line, column, 2), 0)
+        return img_green
 
     def renderizar_canal_azul(self, img):
-        img_b = img.copy()
+        img_blue = img.copy()
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
-                img_b.itemset((line, column, 1), 0)
-                img_b.itemset((line, column, 0), 0)
-
-        return img_b
+                img_blue.itemset((line, column, 1), 0)
+                img_blue.itemset((line, column, 0), 0)
+        return img_blue
 
     def grayscale_media_ponderada(self, img):
         img_grayscale = img.copy()
         for line in range(img.shape[0]):
             for column in range(img.shape[1]):
-                media_pond = img.item(line, column, 0) * 0.299 + img.item(line, column, 1) * 0.587 + img.item(line,
-                                                                                                              column,
-                                                                                                              2) * 0.114
+                media_pond = img.item(line, column, 0) * 0.299 + img.item(line, column, 1) * 0.587 + img.item(line,column,2) * 0.114
                 img_grayscale.itemset((line, column, 0), media_pond)
                 img_grayscale.itemset((line, column, 1), media_pond)
                 img_grayscale.itemset((line, column, 2), media_pond)
@@ -135,7 +131,24 @@ class Filters:
                 f = max(0, 1 - d / raio)  # fator de escurecimento
                 img_vignette[line, column] = img_vignette[line, column] * f  # multiplica o pixel pelo fator
         return img_vignette
+    
+    def sharp(self, img):
+        sharpKernel = np.array([[-1, -1, -1], [-1, 9.5, -1], [-1, -1, -1]])
+        img_sharp = cv.filter2D(img, -1, sharpKernel)
+        return img_sharp
 
+    def canny(self, img):
+        img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+        img_canny = cv.Canny(img_gray, 50, 100)
+        return img_canny
+    
+    def pencil_sketch_gray(self, img):
+        img_pencil_sketch_gray, img_pencil_sketch_color = cv.pencilSketch(img, sigma_s=60, sigma_r=0.07, shade_factor=0.05) # inbuilt function to generate pencil sketch in both color and grayscale
+        return img_pencil_sketch_gray
+    
+    def pencil_sketch_color(self, img):
+        img_pencil_sketch_gray, img_pencil_sketch_color = cv.pencilSketch(img, sigma_s=60, sigma_r=0.07, shade_factor=0.05) # inbuilt function to generate pencil sketch in both color and grayscale
+        return img_pencil_sketch_color
 
 # Criando um objeto da classe Filtros
 filtros = Filters()

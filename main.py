@@ -72,10 +72,8 @@ class ImageEditorApp:
                 img = Image.open(file_path)
                 # Converte a imagem para o formato RGB
                 img = img.convert("RGB")
-
-            img = Image.open(file_path)
-            img = img.convert("RGB")
-            img = img.resize((self.img_x, self.img_y))
+                
+            img = img.resize((600, 600))
 
             img_tk = ImageTk.PhotoImage(img)
 
@@ -98,6 +96,10 @@ class ImageEditorApp:
             img_binarize = self.filters.binarizar(np.array(img), 150)
             img_gray_vignette = self.filters.grayScale_vignette(np.array(img), 225)
             img_vignette = self.filters.vignette(np.array(img), 225)
+            img_sharp = self.filters.sharp(np.array(img))
+            img_canny = self.filters.canny(np.array(img))
+            img_pencil_sketch_gray = self.filters.pencil_sketch_gray(np.array(img))
+            img_pencil_sketch_color = self.filters.pencil_sketch_color(np.array(img))
 
             # Redimensiona as miniaturas
             img_red_thumb = Image.fromarray(img_red).resize((50, 50))
@@ -109,6 +111,11 @@ class ImageEditorApp:
             img_binarize_thumb = Image.fromarray(img_binarize).resize((50, 50))
             img_gray_vignette_thumb = Image.fromarray(img_gray_vignette).resize((50, 50))
             img_vignette_thumb = Image.fromarray(img_vignette).resize((50, 50))
+            img_sharp_thumb = Image.fromarray(img_sharp).resize((50, 50))
+            img_canny_thumb = Image.fromarray(img_canny).resize((50, 50))
+            img_pencil_sketch_gray_thumb = Image.fromarray(img_pencil_sketch_gray).resize((50, 50))
+            img_pencil_sketch_color_thumb = Image.fromarray(img_pencil_sketch_color).resize((50, 50))
+
 
             # Converte miniaturas para o formato do Tkinter
             img_red_tk = ImageTk.PhotoImage(img_red_thumb)
@@ -120,7 +127,10 @@ class ImageEditorApp:
             img_binarize_tk = ImageTk.PhotoImage(img_binarize_thumb)
             img_gray_vignette_tk = ImageTk.PhotoImage(img_gray_vignette_thumb)
             img_vignette_tk = ImageTk.PhotoImage(img_vignette_thumb)
-
+            img_sharp_tk = ImageTk.PhotoImage(img_sharp_thumb)
+            img_canny_tk = ImageTk.PhotoImage(img_canny_thumb)
+            img_pencil_sketch_gray_tk = ImageTk.PhotoImage(img_pencil_sketch_gray_thumb)
+            img_pencil_sketch_color_tk = ImageTk.PhotoImage(img_pencil_sketch_color_thumb)
 
             # Cria botões com miniaturas das imagens
 
@@ -162,6 +172,26 @@ class ImageEditorApp:
             vignette_button.image = img_vignette_tk
             vignette_button.place(x=536, y=705)
 
+            # Cria um botão com a miniatura da imagem afiada
+            self.sharp_button = Button(image=img_sharp_tk,command=lambda: self.sharp(img))
+            self.sharp_button.image = img_sharp_tk
+            self.sharp_button.grid(row=5, column=9)
+
+            # Cria um botão com a miniatura da imagem canny
+            self.canny_button = Button(image=img_canny_tk,command=lambda: self.canny(img))
+            self.canny_button.image = img_canny_tk
+            self.canny_button.grid(row=5, column=10)
+
+            # Cria um botão com a miniatura da imagem em lapis cinza
+            self.pencil_sketch_gray_button = Button(image=img_pencil_sketch_gray_tk,command=lambda: self.pencil_sketch_gray(img))
+            self.pencil_sketch_gray_button.image = img_pencil_sketch_gray_tk
+            self.pencil_sketch_gray_button.grid(row=5, column=11)
+
+            # Cria um botão com a miniatura da imagem em lapis colorida
+            self.pencil_sketch_color_button = Button(image=img_pencil_sketch_color_tk,command=lambda: self.pencil_sketch_color(img))
+            self.pencil_sketch_color_button.image = img_pencil_sketch_color_tk
+            self.pencil_sketch_color_button.grid(row=5, column=12)
+
         except Exception as e:
             print(f"Error displaying image: {e}")
     def save_image(self):
@@ -172,9 +202,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_red = self.filters.renderizar_canal_vermelho(img)
 
-        img_red = Image.fromarray(img_red)
-        img_red = img_red.resize((self.img_x, self.img_y))
-        img_red_tk = ImageTk.PhotoImage(img_red)
+        img_red_tk = self.convertImgTk(img_red)
 
         self.image_label.img = img_red_tk
         self.image_label.config(image=img_red_tk)
@@ -183,9 +211,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_green = self.filters.renderizar_canal_verde(img)
 
-        img_green = Image.fromarray(img_green)
-        img_green = img_green.resize((self.img_x, self.img_y))
-        img_green_tk = ImageTk.PhotoImage(img_green)
+        img_green_tk = self.convertImgTk(img_green)
 
         self.image_label.img = img_green_tk
         self.image_label.config(image=img_green_tk)
@@ -194,9 +220,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_blue = self.filters.renderizar_canal_azul(img)
 
-        img_blue = Image.fromarray(img_blue)
-        img_blue = img_blue.resize((self.img_x, self.img_y))
-        img_blue_tk = ImageTk.PhotoImage(img_blue)
+        img_blue_tk = self.convertImgTk(img_blue)
 
         self.image_label.img = img_blue_tk
         self.image_label.config(image=img_blue_tk)
@@ -205,9 +229,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_gray = self.filters.grayscale_media_ponderada(img)
 
-        img_gray = Image.fromarray(img_gray)
-        img_gray = img_gray.resize((self.img_x, self.img_y))
-        img_gray_tk = ImageTk.PhotoImage(img_gray)
+        img_gray_tk = self.convertImgTk(img_gray)
         # Atualiza a imagem no label
         self.image_label.img = img_gray_tk
         self.image_label.config(image=img_gray_tk)
@@ -216,9 +238,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_color = self.filters.colorizar(img, corUniforme)
 
-        img_color = Image.fromarray(img_color)
-        img_color = img_color.resize((self.img_x, self.img_y))
-        img_color_tk = ImageTk.PhotoImage(img_color)
+        img_color_tk = self.convertImgTk(img_color)
 
         self.image_label.img = img_color_tk
         self.image_label.config(image=img_color_tk)
@@ -227,9 +247,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_invert = self.filters.inverter(img)
 
-        img_invert = Image.fromarray(img_invert)
-        img_invert = img_invert.resize((self.img_x, self.img_y))
-        img_invert_tk = ImageTk.PhotoImage(img_invert)
+        img_invert_tk = self.convertImgTk(img_invert)
 
         self.image_label.img = img_invert_tk
         self.image_label.config(image=img_invert_tk)
@@ -238,9 +256,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_binarize = self.filters.binarizar(img, limiar)
 
-        img_binarize = Image.fromarray(img_binarize)
-        img_binarize = img_binarize.resize((self.img_x, self.img_y))
-        img_binarize_tk = ImageTk.PhotoImage(img_binarize)
+        img_binarize_tk = self.convertImgTk(img_binarize)
 
         self.image_label.img = img_binarize_tk
         self.image_label.config(image=img_binarize_tk)
@@ -249,9 +265,7 @@ class ImageEditorApp:
         img = np.array(img)
         img_gray_vignette = self.filters.grayScale_vignette(img, raio)
 
-        img_gray_vignette = Image.fromarray(img_gray_vignette)
-        img_gray_vignette = img_gray_vignette.resize((self.img_x, self.img_y))
-        img_gray_vignette_tk = ImageTk.PhotoImage(img_gray_vignette)
+        img_gray_vignette_tk = self.convertImgTk(img_gray_vignette)
 
         self.image_label.img = img_gray_vignette_tk
         self.image_label.config(image=img_gray_vignette_tk)
@@ -260,13 +274,57 @@ class ImageEditorApp:
         img = np.array(img)
         img_vignette = self.filters.vignette(img, raio)
 
-        img_vignette = Image.fromarray(img_vignette)
-        img_vignette = img_vignette.resize((self.img_x, self.img_y))
-        img_vignette_tk = ImageTk.PhotoImage(img_vignette)
+        img_vignette_tk = self.convertImgTk(img_vignette)
 
         self.image_label.img = img_vignette_tk
         self.image_label.config(image=img_vignette_tk)
 
+    def sharp(self, img):
+        img = np.array(img)
+
+        img_sharp = self.filters.sharp(img)
+
+        img_sharp_tk = self.convertImgTk(img_sharp)
+
+        self.image_label.img = img_sharp_tk
+        self.image_label.config(image=img_sharp_tk)
+
+    def canny(self, img):
+        img = np.array(img)
+
+        img_canny = self.filters.canny(img)
+
+        img_canny_tk = self.convertImgTk(img_canny)
+
+        self.image_label.img = img_canny_tk
+        self.image_label.config(image=img_canny_tk)
+
+    def pencil_sketch_gray(self, img):
+        img = np.array(img)
+
+        img_pencil_sketch_gray = self.filters.pencil_sketch_gray(img)
+
+        img_pencil_sketch_gray_tk = self.convertImgTk(img_pencil_sketch_gray)
+
+        self.image_label.img = img_pencil_sketch_gray_tk
+        self.image_label.config(image=img_pencil_sketch_gray_tk)
+
+    def pencil_sketch_color(self, img):
+        img = np.array(img)
+
+        img_pencil_sketch_color = self.filters.pencil_sketch_color(img)
+
+        img_pencil_sketch_color_tk = self.convertImgTk(img_pencil_sketch_color)
+
+        self.image_label.img = img_pencil_sketch_color_tk
+        self.image_label.config(image=img_pencil_sketch_color_tk)
+
+    def convertImgTk(self, img):
+        img = Image.fromarray(img)
+        img = img.resize((600, 600))
+        img = ImageTk.PhotoImage(img)
+        return img
+        
     def save_image(self):
         # Lógica para salvar a imagem editada (não implementada aqui)
         pass
