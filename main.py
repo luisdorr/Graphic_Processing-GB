@@ -1,5 +1,4 @@
 from tkinter import Tk, Label, Button, filedialog, Frame
-from tkinter.constants import CENTER, BOTTOM
 
 import numpy as np
 from PIL import Image, ImageTk
@@ -86,6 +85,9 @@ class ImageEditorApp:
 
             info_img = self.image_label.place_info()
 
+            filters_label = Label(text="Filters: ", font=("Arial", 12))
+            filters_label.place(x=50, y=720)
+
             # Cria miniaturas das imagens com filtros aplicados
             img_red = self.filters.renderizar_canal_vermelho(np.array(img))
             img_green = self.filters.renderizar_canal_verde(np.array(img))
@@ -158,7 +160,7 @@ class ImageEditorApp:
             invert_button.image = img_invert_tk
             invert_button.place(x=356, y=705)
 
-            binarize_button = Button(image=img_binarize_tk, command=lambda: self.binarizar(img, 125))
+            binarize_button = Button(image=img_binarize_tk, command=lambda: self.binarizar(img, 150))
             binarize_button.image = img_binarize_tk
             binarize_button.place(x=406, y=705)
 
