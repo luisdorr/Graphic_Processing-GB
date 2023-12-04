@@ -136,61 +136,61 @@ class ImageEditorApp:
 
             red_button = Button(image=img_red_tk, command=lambda: self.renderizar_canal_vermelho(img))
             red_button.image = img_red_tk  # Mantém uma referência para a imagem
-            red_button.place(x=136, y=705)
+            red_button.place(x=106, y=705)
 
             green_button = Button(image=img_green_tk, command=lambda: self.renderizar_canal_verde(img))
             green_button.image = img_green_tk
-            green_button.place(x=186, y=705)
+            green_button.place(x=156, y=705)
 
             blue_button = Button(image=img_blue_tk, command=lambda: self.renderizar_canal_azul(img))
             blue_button.image = img_blue_tk
-            blue_button.place(x=236, y=705)
+            blue_button.place(x=206, y=705)
 
             gray_button = Button(image=img_gray_tk, command=lambda: self.grayscale_media_ponderada(img))
             gray_button.image = img_gray_tk
-            gray_button.place(x=286, y=705)
+            gray_button.place(x=256, y=705)
 
             color_button = Button(image=img_color_tk, command=lambda: self.colorizar(img, [50, 100, 200]))
             color_button.image = img_color_tk
-            color_button.place(x=336, y=705)
+            color_button.place(x=306, y=705)
 
             invert_button = Button(image=img_invert_tk, command=lambda: self.inverter(img))
             invert_button.image = img_invert_tk
-            invert_button.place(x=386, y=705)
+            invert_button.place(x=356, y=705)
 
             binarize_button = Button(image=img_binarize_tk, command=lambda: self.binarizar(img, 125))
             binarize_button.image = img_binarize_tk
-            binarize_button.place(x=436, y=705)
+            binarize_button.place(x=406, y=705)
 
             gray_vignette_button = Button(image=img_gray_vignette_tk,
                                                command=lambda: self.grayScale_vignette(img, 275))
             gray_vignette_button.image = img_gray_vignette_tk
-            gray_vignette_button.place(x=486, y=705)
+            gray_vignette_button.place(x=456, y=705)
 
             vignette_button = Button(image=img_vignette_tk,
                                           command=lambda: self.vignette(img, 275))
             vignette_button.image = img_vignette_tk
-            vignette_button.place(x=536, y=705)
+            vignette_button.place(x=506, y=705)
 
             # Cria um botão com a miniatura da imagem afiada
             self.sharp_button = Button(image=img_sharp_tk,command=lambda: self.sharp(img))
             self.sharp_button.image = img_sharp_tk
-            self.sharp_button.grid(row=5, column=9)
+            self.sharp_button.place(x=556, y=705)
 
             # Cria um botão com a miniatura da imagem canny
             self.canny_button = Button(image=img_canny_tk,command=lambda: self.canny(img))
             self.canny_button.image = img_canny_tk
-            self.canny_button.grid(row=5, column=10)
+            self.canny_button.place(x=606, y=705)
 
             # Cria um botão com a miniatura da imagem em lapis cinza
             self.pencil_sketch_gray_button = Button(image=img_pencil_sketch_gray_tk,command=lambda: self.pencil_sketch_gray(img))
             self.pencil_sketch_gray_button.image = img_pencil_sketch_gray_tk
-            self.pencil_sketch_gray_button.grid(row=5, column=11)
+            self.pencil_sketch_gray_button.place(x=656, y=705)
 
             # Cria um botão com a miniatura da imagem em lapis colorida
             self.pencil_sketch_color_button = Button(image=img_pencil_sketch_color_tk,command=lambda: self.pencil_sketch_color(img))
             self.pencil_sketch_color_button.image = img_pencil_sketch_color_tk
-            self.pencil_sketch_color_button.grid(row=5, column=12)
+            self.pencil_sketch_color_button.place(x=706, y=705)
 
         except Exception as e:
             print(f"Error displaying image: {e}")
