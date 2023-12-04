@@ -15,22 +15,23 @@ class ImageEditorApp:
         self.root = Tk()
         self.root.title("Image Editor App")
         self.root.config(padx=10, pady=10)
+        self.root.geometry("900x900")
 
         # Cria os widgets do menu usando o atributo self
         self.welcome_label = Label(text="Welcome to our App! :)", font=("Arial", 16))
-        self.welcome_label.grid(row=0, column=0, columnspan=2, sticky="n")
-
+        self.welcome_label.place(relx=0.5, y=10, anchor="center")
+        
         self.option_label = Label(text="Choose an option", font=("Arial", 12))
-        self.option_label.grid(row=1, column=0, columnspan=2, pady=10)
+        self.option_label.place(relx=0.5, y=35, anchor="center")
 
         self.camera_button = Button(text="Take a photo", width=15, command=self.take_photo)
-        self.camera_button.grid(row=2, column=0, columnspan=2, padx=5)
+        self.camera_button.place(relx=0.5, y=60, anchor="center")
 
         self.file_button = Button(text="Choose an image", width=15, command=self.open_file)
-        self.file_button.grid(row=3, column=0, columnspan=2, padx=5)
-
+        self.file_button.place(relx=0.5, y=90, anchor="center")
+        
         self.image_label = Label(self.root)
-        self.image_label.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.image_label.place(relx=0.5, y=500, anchor="center")
 
         self.root.mainloop()
 
@@ -45,6 +46,8 @@ class ImageEditorApp:
             return
 
         # Display the resulting frame
+        self.root.title("Editor de Imagens")
+        self.root.geometry("900x900")
         self.display_image(frame)
 
     def open_file(self):
@@ -52,10 +55,6 @@ class ImageEditorApp:
 
         if file_path:
             # Esconde os widgets do menu usando o método grid_forget
-            self.welcome_label.grid_forget()
-            self.option_label.grid_forget()
-            self.camera_button.grid_forget()
-            self.file_button.grid_forget()
             self.root.title("Editor de Imagens")
             self.root.geometry("900x900")
             self.display_image(file_path)
@@ -79,14 +78,17 @@ class ImageEditorApp:
             self.image_label.img = img_tk
             self.image_label.config(image=img_tk)
 
-            self.image_label.pack(pady=100)
+            self.image_label.pack(pady=110)
 
             self.filters = Filters()
 
             info_img = self.image_label.place_info()
-
+            
             filters_label = Label(text="Filters: ", font=("Arial", 12))
-            filters_label.place(x=50, y=720)
+            filters_label.place(x=50, y=730)
+
+            # Pega a posição do label dos filtros para aplicar em todos os botoes
+            filters_y_pos = 715
 
             # Cria miniaturas das imagens com filtros aplicados
             img_red = self.filters.renderizar_canal_vermelho(np.array(img))
@@ -138,67 +140,93 @@ class ImageEditorApp:
 
             red_button = Button(image=img_red_tk, command=lambda: self.renderizar_canal_vermelho(img))
             red_button.image = img_red_tk  # Mantém uma referência para a imagem
-            red_button.place(x=106, y=705)
+            red_button.place(x=106, y=filters_y_pos)
 
             green_button = Button(image=img_green_tk, command=lambda: self.renderizar_canal_verde(img))
             green_button.image = img_green_tk
-            green_button.place(x=156, y=705)
+            green_button.place(x=156, y=filters_y_pos)
 
             blue_button = Button(image=img_blue_tk, command=lambda: self.renderizar_canal_azul(img))
             blue_button.image = img_blue_tk
-            blue_button.place(x=206, y=705)
+            blue_button.place(x=206, y=filters_y_pos)
 
             gray_button = Button(image=img_gray_tk, command=lambda: self.grayscale_media_ponderada(img))
             gray_button.image = img_gray_tk
-            gray_button.place(x=256, y=705)
+            gray_button.place(x=256, y=filters_y_pos)
 
             color_button = Button(image=img_color_tk, command=lambda: self.colorizar(img, [50, 100, 200]))
             color_button.image = img_color_tk
-            color_button.place(x=306, y=705)
+            color_button.place(x=306, y=filters_y_pos)
 
             invert_button = Button(image=img_invert_tk, command=lambda: self.inverter(img))
             invert_button.image = img_invert_tk
-            invert_button.place(x=356, y=705)
+            invert_button.place(x=356, y=filters_y_pos)
 
             binarize_button = Button(image=img_binarize_tk, command=lambda: self.binarizar(img, 150))
             binarize_button.image = img_binarize_tk
-            binarize_button.place(x=406, y=705)
+            binarize_button.place(x=406, y=filters_y_pos)
 
             gray_vignette_button = Button(image=img_gray_vignette_tk,
                                                command=lambda: self.grayScale_vignette(img, 275))
             gray_vignette_button.image = img_gray_vignette_tk
-            gray_vignette_button.place(x=456, y=705)
+            gray_vignette_button.place(x=456, y=filters_y_pos)
 
             vignette_button = Button(image=img_vignette_tk,
                                           command=lambda: self.vignette(img, 275))
             vignette_button.image = img_vignette_tk
-            vignette_button.place(x=506, y=705)
+            vignette_button.place(x=506, y=filters_y_pos)
 
             # Cria um botão com a miniatura da imagem afiada
             self.sharp_button = Button(image=img_sharp_tk,command=lambda: self.sharp(img))
             self.sharp_button.image = img_sharp_tk
-            self.sharp_button.place(x=556, y=705)
+            self.sharp_button.place(x=556, y=filters_y_pos)
 
             # Cria um botão com a miniatura da imagem canny
             self.canny_button = Button(image=img_canny_tk,command=lambda: self.canny(img))
             self.canny_button.image = img_canny_tk
-            self.canny_button.place(x=606, y=705)
+            self.canny_button.place(x=606, y=filters_y_pos)
 
             # Cria um botão com a miniatura da imagem em lapis cinza
             self.pencil_sketch_gray_button = Button(image=img_pencil_sketch_gray_tk,command=lambda: self.pencil_sketch_gray(img))
             self.pencil_sketch_gray_button.image = img_pencil_sketch_gray_tk
-            self.pencil_sketch_gray_button.place(x=656, y=705)
+            self.pencil_sketch_gray_button.place(x=656, y=filters_y_pos)
 
             # Cria um botão com a miniatura da imagem em lapis colorida
             self.pencil_sketch_color_button = Button(image=img_pencil_sketch_color_tk,command=lambda: self.pencil_sketch_color(img))
             self.pencil_sketch_color_button.image = img_pencil_sketch_color_tk
-            self.pencil_sketch_color_button.place(x=706, y=705)
+            self.pencil_sketch_color_button.place(x=706, y=filters_y_pos)
+
+            # Cria um botão para salvar a imagem
+            self.save_button = Button(text="Save Image", width=15, command=lambda: self.save_image())
+            self.save_button.place(relx=0.5, y=870, anchor="center")
+
 
         except Exception as e:
             print(f"Error displaying image: {e}")
+
     def save_image(self):
-        # Lógica para salvar a imagem editada (não implementada aqui)
-        pass
+        try:
+            # Obtém a imagem atual exibida no Label
+            img = self.image_label.img
+
+            if (img):
+                # Converte a imagem Tkinter para PIL
+                img_pil = ImageTk.getimage(img)
+
+                # Abre um diálogo para salvar o arquivo
+                file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[(".png", "*.png"), (".jpg", "*.jpg")])
+
+                if (file_path):
+                    # Salva a imagem usando o caminho especificado
+                    img_pil.save(file_path)
+                    print("Image saved successfully.")
+                else:
+                    print("Specified path not found.")
+            else:
+                print("No image to save.")
+
+        except Exception as e:
+            print(f"Error saving imagee: {e}")
 
     def renderizar_canal_vermelho(self, img):
         img = np.array(img)
@@ -326,10 +354,6 @@ class ImageEditorApp:
         img = img.resize((600, 600))
         img = ImageTk.PhotoImage(img)
         return img
-        
-    def save_image(self):
-        # Lógica para salvar a imagem editada (não implementada aqui)
-        pass
 
 
 def main():
