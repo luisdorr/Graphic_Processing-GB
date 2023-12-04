@@ -1,12 +1,6 @@
 import numpy as np
 import cv2 as cv
 
-img = cv.imread('images/baboon.png')  # original
-img5 = cv.imread('images/bolinhas.png')  # original
-corModificadora = [255, 0, 0]
-k = 150
-
-
 class Filters:
     def grayscale_media_aritmetica(self, img):
         img_grayscale_media = img.copy()
@@ -127,7 +121,7 @@ class Filters:
         cx, cy = w // 2, h // 2  # centro da imagem
         for line in range(h):
             for column in range(w):
-                d = ((line - cy) ** 2 + (column - cx) ** 2) ** 0.5  # distância do pixel ao centro
+                d = ((line - cy) ** 2 + (column - cx) ** 2) ** 0.43  # distância do pixel ao centro
                 f = max(0, 1 - d / raio)  # fator de escurecimento
                 img_vignette[line, column] = img_vignette[line, column] * f  # multiplica o pixel pelo fator
         return img_vignette
@@ -149,51 +143,3 @@ class Filters:
     def pencil_sketch_color(self, img):
         img_pencil_sketch_gray, img_pencil_sketch_color = cv.pencilSketch(img, sigma_s=60, sigma_r=0.07, shade_factor=0.05) # inbuilt function to generate pencil sketch in both color and grayscale
         return img_pencil_sketch_color
-
-# Criando um objeto da classe Filtros
-filtros = Filters()
-
-# Aplicando os métodos na imagem original
-# img2 = filtros.grayscale_media_aritmetica(img)
-# img3 = filtros.grayscale_media_ponderada(img)
-# img10 = filtros.grayscale_apenas_um_canal(img)
-# img4 = filtros.colorizar(img, corModificadora)
-# img6 = filtros.inverter(img5)
-# img8 = filtros.binarizar(img, k)
-# img9 = filtros.color_ramp(img)
-
-# Exibindo as imagens
-# cv.imshow("Original", img)
-# cv.imshow("Grayscale - Média Aritmética", img2)
-# cv.imshow("Grayscale - Média Ponderada", img3)
-# cv.imshow("Grayscale - Apenas um canal", img10)
-# cv.imshow("Imagem colorizada", img4)
-# cv.imshow("Imagem invertida", img6)
-# cv.imshow("Imagem Binarizada", img8)
-# cv.imshow("Imagem Color Ramp", img9)
-"""
-img_r = filtros.renderizar_canal_vermelho(img)
-img_g = filtros.renderizar_canal_verde(img)
-img_b = filtros.renderizar_canal_azul(img)
-img_grayscale = filtros.grayscale_media_ponderada(img)
-
-corUniforme = [50, 100, 200]
-img_colorized = filtros.colorizar(img, corUniforme)
-img_inverted = filtros.inverter(img)
-img_binarised = filtros.binarizar(img, 100)
-img_mixed = filtros.grayScale_Vignette(img, 225)
-img_vignette = filtros.vignette(img, 274)
-
-cv.imshow("Canal vermelho", img_r)
-cv.imshow("Canal verde", img_g)
-cv.imshow("Canal azul", img_b)
-cv.imshow("Grayscale", img_grayscale)
-cv.imshow("Colorized", img_colorized)
-cv.imshow("Inverted", img_inverted)
-cv.imshow("Binarised", img_binarised)
-cv.imshow("Mixed", img_mixed)
-cv.imshow("Vignette", img_vignette)
-
-cv.waitKey(0)
-cv.destroyAllWindows()
-"""
