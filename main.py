@@ -69,7 +69,7 @@ class ImageEditorApp:
                 # Converte a imagem para o formato RGB
                 img = img.convert("RGB")
                 
-            img = img.resize((300, 300))
+            img = img.resize((600, 600))
 
             img_tk = ImageTk.PhotoImage(img)
 
@@ -96,6 +96,8 @@ class ImageEditorApp:
             img_vignette = self.filters.vignette(np.array(img), 225)
             img_sharp = self.filters.sharp(np.array(img))
             img_canny = self.filters.canny(np.array(img))
+            img_pencil_sketch_gray = self.filters.pencil_sketch_gray(np.array(img))
+            img_pencil_sketch_color = self.filters.pencil_sketch_color(np.array(img))
 
             # Redimensiona as miniaturas
             img_red_thumb = Image.fromarray(img_red).resize((50, 50))
@@ -109,6 +111,9 @@ class ImageEditorApp:
             img_vignette_thumb = Image.fromarray(img_vignette).resize((50, 50))
             img_sharp_thumb = Image.fromarray(img_sharp).resize((50, 50))
             img_canny_thumb = Image.fromarray(img_canny).resize((50, 50))
+            img_pencil_sketch_gray_thumb = Image.fromarray(img_pencil_sketch_gray).resize((50, 50))
+            img_pencil_sketch_color_thumb = Image.fromarray(img_pencil_sketch_color).resize((50, 50))
+
 
             # Converte miniaturas para o formato do Tkinter
             img_red_tk = ImageTk.PhotoImage(img_red_thumb)
@@ -122,7 +127,9 @@ class ImageEditorApp:
             img_vignette_tk = ImageTk.PhotoImage(img_vignette_thumb)
             img_sharp_tk = ImageTk.PhotoImage(img_sharp_thumb)
             img_canny_tk = ImageTk.PhotoImage(img_canny_thumb)
-            
+            img_pencil_sketch_gray_tk = ImageTk.PhotoImage(img_pencil_sketch_gray_thumb)
+            img_pencil_sketch_color_tk = ImageTk.PhotoImage(img_pencil_sketch_color_thumb)
+
             # Cria botões com miniaturas das imagens
             self.red_button = Button(image=img_red_tk, command=lambda: self.renderizar_canal_vermelho(img))
             self.red_button.image = img_red_tk  # Mantém uma referência para a imagem
@@ -177,6 +184,16 @@ class ImageEditorApp:
             self.canny_button = Button(image=img_canny_tk,command=lambda: self.canny(img))
             self.canny_button.image = img_canny_tk
             self.canny_button.grid(row=5, column=10)
+
+            # Cria um botão com a miniatura da imagem em lapis cinza
+            self.pencil_sketch_gray_button = Button(image=img_pencil_sketch_gray_tk,command=lambda: self.pencil_sketch_gray(img))
+            self.pencil_sketch_gray_button.image = img_pencil_sketch_gray_tk
+            self.pencil_sketch_gray_button.grid(row=5, column=11)
+
+            # Cria um botão com a miniatura da imagem em lapis colorida
+            self.pencil_sketch_color_button = Button(image=img_pencil_sketch_color_tk,command=lambda: self.pencil_sketch_color(img))
+            self.pencil_sketch_color_button.image = img_pencil_sketch_color_tk
+            self.pencil_sketch_color_button.grid(row=5, column=12)
 
         except Exception as e:
             print(f"Error displaying image: {e}")
@@ -285,9 +302,29 @@ class ImageEditorApp:
         self.image_label.img = img_canny_tk
         self.image_label.config(image=img_canny_tk)
 
+    def pencil_sketch_gray(self, img):
+        img = np.array(img)
+
+        img_pencil_sketch_gray = self.filters.pencil_sketch_gray(img)
+
+        img_pencil_sketch_gray_tk = self.convertImgTk(img_pencil_sketch_gray)
+
+        self.image_label.img = img_pencil_sketch_gray_tk
+        self.image_label.config(image=img_pencil_sketch_gray_tk)
+
+    def pencil_sketch_color(self, img):
+        img = np.array(img)
+
+        img_pencil_sketch_color = self.filters.pencil_sketch_color(img)
+
+        img_pencil_sketch_color_tk = self.convertImgTk(img_pencil_sketch_color)
+
+        self.image_label.img = img_pencil_sketch_color_tk
+        self.image_label.config(image=img_pencil_sketch_color_tk)
+
     def convertImgTk(self, img):
         img = Image.fromarray(img)
-        img = img.resize((300, 300))
+        img = img.resize((600, 600))
         img = ImageTk.PhotoImage(img)
         return img
         
